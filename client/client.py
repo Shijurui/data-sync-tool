@@ -5,7 +5,8 @@ This code should demonstrate detecting and verifying that a file has changed, an
 
 Why did I choose this segment?
 
-I have chosen to write a code snippet for the change detectiong as it deals with both the scanning of files, and checking to see if the file needs to be synchronised.
+I have chosen to write a code snippet for the change detection as it deals with both the scanning of files, and checking to see if the file needs to be synchronised.
+The next segment would show how the client would communicate with the server and how time_last_successful_sync will be added to each row.
 
 """
 
@@ -21,6 +22,8 @@ BUF_SIZE = 65536
 # Create/Connect to db
 con = sqlite3.connect(DATABASE_NAME)
 cur = con.cursor()
+
+# Check what tables exist in the db
 tables_found = cur.execute("SELECT name FROM sqlite_master").fetchall()
 table_names = []
 for table in tables_found:
@@ -31,8 +34,6 @@ if "files" not in table_names:
     cur.execute(
         "CREATE TABLE files(file_path, file_hash, time_last_change, time_last_successful_sync, to_sync)"
     )
-if "last_run" not in table_names:
-    cur.execute("CREATE TABLE last_run(time_last_run)")
 
 for path in MONITORED_DIRS:
     for file in os.listdir(path):
